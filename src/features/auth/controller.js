@@ -6,15 +6,12 @@ import { role as Role } from '../role/index.js';
 
 const login = async (req, res) => {
   const { username, password } = req.body;
-
-  console.log(config.jwt.key);
-
   if (!username) return services.response.send({ res, code: 400, error: 'username is required' });
   if (!password) return services.response.send({ res, code: 400, error: 'password is required' });
   const employee = await services.api.get_employee(username);
-  if (!employee || !employee.is_active) return services.response.send({ res, code: 401, error: 'invalid credentials' });
+  if (!employee || !employee.is_active) return services.response.send({ res, code: 404, error: 'invalid credentials' });
   const user = await User.model.findOne({ employee_id: employee._id, app_id: password });
-  if (!user) return services.response.send({ res, code: 401, error: 'invalid credentials' });
+  if (!user) return services.response.send({ res, code: 404, error: 'invalid credentials' });
   const access_token = jwt.sign({ id: user._id }, config.jwt.key, { expiresIn: '1h' });
   const refresh_token = jwt.sign({ id: user._id }, config.jwt.key, { expiresIn: '7d' });
   const data = { access_token, refresh_token };
