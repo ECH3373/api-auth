@@ -7,6 +7,8 @@ import { role as Role } from '../role/index.js';
 const login = async (req, res) => {
   const { username, password } = req.body;
 
+  console.log(config.jwt.key);
+
   if (!username) return services.response.send({ res, code: 400, error: 'username is required' });
   if (!password) return services.response.send({ res, code: 400, error: 'password is required' });
   const employee = await services.api.get_employee(username);
@@ -43,6 +45,7 @@ const me = async (req, res) => {
 const logout = async (req, res) => {
   return services.response.send({ res, message: 'logout' });
 };
+
 export const controller = {
   login,
   refresh,
