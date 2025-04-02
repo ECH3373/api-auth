@@ -8,38 +8,38 @@ Authentication management application.
 
 ## Description
 
-This API is designed to manage authentication within an organization. The application is built using Node.js and Express, and data is stored in MongoDB.
+This API is designed to manage authentication within an organization. The application is built using Node.js and Express, and data is stored in MySQL.
 
 ## Technologies
 
 - **Node.js**: JavaScript runtime for building the API.
 - **Express**: Web framework for Node.js to handle routing and requests.
-- **MongoDB**: NoSQL database to store authentication data.
+- **MySQL**: Relational database to store department data.
 - **Git**: Version control system used to manage the project.
 - **GitHub**: Cloud-based repository hosting for version control and collaboration.
 - **Docker**: Containerization tool to create and deploy the API in a consistent environment across different platforms.
 
 ## Installation
 
-1. Clona el repositorio:
+1. Clone the repository:
 
    ```bash
-   git clone https://github.com/usuario/api-authentications.git
+   git clone https://github.com/usuario/api-departments.git
    ```
 
-2. Navega al directorio del proyecto:
+2. Navigate to the project directory:
 
    ```bash
-   cd api-authentications
+   cd api-departments
    ```
 
-3. Instala las dependencias:
+3. Install the dependencies:
 
    ```bash
    npm install
    ```
 
-4. Inicia el servidor de la API:
+4. Start the API server:
 
    ```bash
    npm start

@@ -1,19 +1,21 @@
+import axios from 'axios';
 import jwt from 'jsonwebtoken';
-import { config } from '../../../config/index.js';
-import { services } from '../../services/index.js';
-import { user as User } from '../user/index.js';
-import { role as Role } from '../role/index.js';
+import { PrismaClient } from '@prisma/client';
+import { services } from '../shared/services/index.js';
+import { config } from '../../config/index.js';
+
+const prisma = new PrismaClient();
 
 const login = async (req, res) => {
   const { username, password } = req.body;
   if (!username) return services.response.send({ res, code: 400, error: 'username is required' });
   if (!password) return services.response.send({ res, code: 400, error: 'password is required' });
-  const employee = await services.api.get_employee(username);
+  const employee = (await axios.get(`http://82.29.197.244:3000/employees/${username}`)).data.data;
   if (!employee || !employee.is_active) return services.response.send({ res, code: 404, error: 'invalid credentials' });
-  const user = await User.model.findOne({ employee_id: employee._id, app_id: password });
+  const user = await prisma.user.findFirst({ where: { employee_id: employee._id, app_id: password }, include: { role: true } });
   if (!user) return services.response.send({ res, code: 404, error: 'invalid credentials' });
-  const access_token = jwt.sign({ id: user._id }, config.jwt.key, { expiresIn: '1h' });
-  const refresh_token = jwt.sign({ id: user._id }, config.jwt.key, { expiresIn: '7d' });
+  const access_token = jwt.sign({ id: user.id }, config.jwt.key, { expiresIn: '1h' });
+  const refresh_token = jwt.sign({ id: user.id }, config.jwt.key, { expiresIn: '7d' });
   const data = { access_token, refresh_token };
   return services.response.send({ res, data, message: 'logged' });
 };
@@ -31,11 +33,10 @@ const me = async (req, res) => {
   if (!authHeader) return services.response.send({ res, code: 401, error: 'no token provided' });
   const token = authHeader.split(' ')[1];
   const decoded = jwt.verify(token, config.jwt.key);
-  const user = await User.model.findById(decoded.id);
+  const user = await prisma.user.findFirst({ where: { id: decoded.id }, include: { role: true } });
   if (!user) return services.response.send({ res, code: 404, error: 'user not found' });
-  const employee = await services.api.get_employee(user.employee_id);
-  const role = await Role.model.findById(user.role_id);
-  const data = { ...employee, role };
+  const employee = (await axios.get(`http://82.29.197.244:3000/employees/${user.employee_id}`)).data.data;
+  const data = { employee, role: user.role };
   return services.response.send({ res, data, message: 'user found successfull' });
 };
 
