@@ -10,7 +10,7 @@ app.use(express.json());
 app.use('/api/v1/auth', auth.router);
 
 app.use((err, req, res, next) => {
-  if (err.name === 'TokenExpiredError') return services.response.send({ res, code: 401, success: false, error: err.message });
+  if (err.name === 'TokenExpiredError') return res.status(401).json({ error: err.message });
   res.status(500).json({ error: err.message || 'An error occurred while processing the request' });
 });
 
