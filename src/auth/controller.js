@@ -25,7 +25,8 @@ const refresh = async (req, res) => {
   if (!refresh_token) return services.response.send({ res, code: 400, error: 'refresh_token is required' });
   const decoded = jwt.verify(refresh_token, config.jwt.key);
   const access_token = jwt.sign({ id: decoded.id }, config.jwt.key, { expiresIn: '1h' });
-  return services.response.send({ res, data: access_token, message: 'token refreshed' });
+  const data = { access_token };
+  return services.response.send({ res, data, message: 'token refreshed' });
 };
 
 const me = async (req, res) => {
