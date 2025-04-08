@@ -12,7 +12,7 @@ const login = async (req, res) => {
   if (!password) return services.response.send({ res, code: 400, error: 'password is required' });
   const employee = (await axios.get(`http://82.29.197.244:8080/employees/${username}`)).data.data;
   if (!employee || !employee.is_active) return services.response.send({ res, code: 404, error: 'invalid credentials' });
-  const user = await prisma.user.findFirst({ where: { employee_id: employee._id, app_id: password }, include: { role: true } });
+  const user = await prisma.user.findFirst({ where: { employee_id: employee.id, app_id: password }, include: { role: true } });
   if (!user) return services.response.send({ res, code: 404, error: 'invalid credentials' });
   const access_token = jwt.sign({ id: user.id }, config.jwt.key, { expiresIn: '1h' });
   const refresh_token = jwt.sign({ id: user.id }, config.jwt.key, { expiresIn: '7d' });
