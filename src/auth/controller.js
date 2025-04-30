@@ -10,7 +10,7 @@ const login = async (req, res) => {
   const { username, password } = req.body;
   if (!username) return services.response.send({ res, code: 400, error: 'username is required' });
   if (!password) return services.response.send({ res, code: 400, error: 'password is required' });
-  const employee = (await axios.get(`https://gateway.stullerlandcommunity.com/${username}`)).data.data;
+  const employee = (await axios.get(`https://gateway.stullerlandcommunity.com/employees/${username}`)).data.data;
   if (!employee || !employee.is_active) return services.response.send({ res, code: 404, error: 'invalid credentials' });
   const user = await prisma.user.findFirst({ where: { employee_id: employee.id, app_id: password }, include: { role: true } });
   if (!user) return services.response.send({ res, code: 404, error: 'invalid credentials' });
