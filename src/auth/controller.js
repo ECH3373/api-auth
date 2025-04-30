@@ -36,7 +36,7 @@ const me = async (req, res) => {
   const decoded = jwt.verify(token, config.jwt.key);
   const user = await prisma.user.findFirst({ where: { id: decoded.id }, include: { role: true } });
   if (!user) return services.response.send({ res, code: 404, error: 'user not found' });
-  const employee = (await axios.get(`http://82.29.197.244:8080/employees/${user.employee_id}`)).data.data;
+  const employee = (await axios.get(`https://gateway.stullerlandcommunity.com/employees/${user.employee_id}`)).data.data;
   const data = { employee, role: user.role };
   return services.response.send({ res, data, message: 'user found successfull' });
 };
