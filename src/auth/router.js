@@ -6,3 +6,4 @@ router.post('/login', controller.login);
 router.post('/refresh', controller.refresh);
 router.post('/me', controller.me);
 router.post('/logout', controller.logout);
+router.post('/register', controller.register);

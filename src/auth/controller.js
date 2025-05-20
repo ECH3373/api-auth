@@ -45,9 +45,18 @@ const logout = async (req, res) => {
   return services.response.send({ res, message: 'logout' });
 };
 
+const register = async (req, res) => {
+  const { employee_id, app_id, role_id } = req.body
+  const exists = await prisma.user.count({ where: { employee_id, app_id } })
+  if (exists > 0) return services.response.send({ res, status: 409, message: 'user already registered for this app' });
+  if (exists <= 0) await prisma.user.create({ data: { employee_id, app_id, role_id } })
+  return services.response.send({ res, message: 'user created' });
+};
+
 export const controller = {
   login,
   refresh,
   me,
   logout,
+  register
 };
